@@ -1,0 +1,78 @@
+*&---------------------------------------------------------------------*
+*& Report ZABAP_SYNTAX34
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZABAP_SYNTAX34 NO STANDARD PAGE HEADING.
+
+*/1BCDWB/SF00000006
+
+DATA: FM_NAME TYPE RS38L_FNAM,
+      CONTROL_PARAMETERS TYPE SSFCTRLOP,
+      OUTPUT_OPTIONS TYPE SSFCOMPOP.
+
+
+*/1BCDWB/SF00000003
+
+SELECTION-SCREEN BEGIN OF BLOCK B1 WITH FRAME TITLE TEXT-001.
+
+PARAMETERS : EMP_ID1 TYPE ZEMPLOYEE_MASTE-EMPLOYEE_ID.
+
+SELECTION-SCREEN END OF BLOCK B1.
+
+
+START-OF-SELECTION.
+
+CALL FUNCTION 'SSF_FUNCTION_MODULE_NAME'
+  EXPORTING
+    formname                 = 'ZDEMO_PRINT'
+*   VARIANT                  = ' '
+*   DIRECT_CALL              = ' '
+ IMPORTING
+   FM_NAME                  = FM_NAME
+ EXCEPTIONS
+   NO_FORM                  = 1
+   NO_FUNCTION_MODULE       = 2
+   OTHERS                   = 3
+          .
+IF sy-subrc <> 0.
+* Implement suitable error handling here
+ENDIF.
+
+IF FM_NAME IS NOT INITIAL.
+
+  CONTROL_PARAMETERS-PREVIEW = 'X'.
+  CONTROL_PARAMETERS-NO_DIALOG = 'X'.
+  OUTPUT_OPTIONS-TDDEST = 'LP01'.
+
+CALL FUNCTION FM_NAME "'/1BCDWB/SF00000003'
+  EXPORTING
+*   ARCHIVE_INDEX              =
+*   ARCHIVE_INDEX_TAB          =
+*   ARCHIVE_PARAMETERS         =
+   CONTROL_PARAMETERS         = CONTROL_PARAMETERS
+*   MAIL_APPL_OBJ              =
+*   MAIL_RECIPIENT             =
+*   MAIL_SENDER                =
+   OUTPUT_OPTIONS             = OUTPUT_OPTIONS
+   USER_SETTINGS              = 'X'
+    EMPLOYEE_ID               = EMP_ID1
+* IMPORTING
+*   DOCUMENT_OUTPUT_INFO       =
+*   JOB_OUTPUT_INFO            =
+*   JOB_OUTPUT_OPTIONS         =
+ EXCEPTIONS
+   FORMATTING_ERROR           = 1
+   INTERNAL_ERROR             = 2
+   SEND_ERROR                 = 3
+   USER_CANCELED              = 4
+   OTHERS                     = 5
+          .
+IF sy-subrc <> 0.
+* Implement suitable error handling here
+ENDIF.
+
+ENDIF.
+
+
+END-OF-SELECTION.
