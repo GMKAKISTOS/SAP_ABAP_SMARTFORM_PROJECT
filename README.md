@@ -1,1 +1,1 @@
-# SAP_ABAP_SMARTFORM_PROJECT
+# Creating a smartform in sap abap netweaver 7.52 SP04
